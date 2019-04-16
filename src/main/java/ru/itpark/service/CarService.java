@@ -24,7 +24,7 @@ public class CarService {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars ORDER BY id");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars");) {
             while(resultSet.next()) {
                 String id = resultSet.getString(1);
                 String manufacturer = resultSet.getString(2);
@@ -44,7 +44,20 @@ public class CarService {
         return cars;
     }
 
-    public Car getById() {
+    public Car getById(int id) {
         return new Car();
+    }
+
+    public void create() {
+        try(Connection conn = source.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("GET COUNT(*) FROM cars")) {
+            resultSet.next();
+            int row = resultSet.getInt(1);
+            conn.createStatement().execute("INSERT INTO cars VALUES ()");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

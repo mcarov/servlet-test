@@ -24,7 +24,8 @@ public class CarService {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars");) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars")) {
+
             while(resultSet.next()) {
                 String id = resultSet.getString(1);
                 String manufacturer = resultSet.getString(2);
@@ -33,19 +34,36 @@ public class CarService {
                 String year = resultSet.getString(5);
                 String color = resultSet.getString(6);
                 String image = resultSet.getString(7);
-
                 cars.add(new Car(id, manufacturer, model, enginePower, year, color, image));
             }
             return cars;
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
         return cars;
     }
 
-    public Car getById(int id) {
-        return new Car();
+    public Car getById(String id) {
+        Car car = null;
+        try(Connection conn = source.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars WHERE id="+id)){
+
+            resultSet.next();
+            String manufacturer = resultSet.getString(2);
+            String model = resultSet.getString(3);
+            String enginePower = resultSet.getString(4);
+            String year = resultSet.getString(5);
+            String color = resultSet.getString(6);
+            String image = resultSet.getString(7);
+            car = new Car(id, manufacturer, model, enginePower, year, color, image);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return car;
     }
 
     public void create() {
@@ -59,5 +77,8 @@ public class CarService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public  void delete() {
+
     }
 }

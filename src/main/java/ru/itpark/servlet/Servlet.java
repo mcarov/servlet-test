@@ -16,7 +16,7 @@ public class Servlet extends HttpServlet {
     private CarService service;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         try {
             InitialContext context = new InitialContext();
             service = (CarService) context.lookup("java:/comp/env/bean/car-service");
@@ -28,6 +28,17 @@ public class Servlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getPathInfo() != null) {
+            String[] split = req.getPathInfo().split("/");
+            if(split.length == 2) {
+                String id = split[1];
+                Car car = service.getById(id);
+                req.setAttribute("car", car);
+                req.getRequestDispatcher("/WEB-INF/details.jsp").forward(req, resp);
+                return;
+            }
+        }
+
         List<Car> list = service.getAll();
         req.setAttribute("cars", list);
         req.getRequestDispatcher("/WEB-INF/catalog.jsp").forward(req, resp);

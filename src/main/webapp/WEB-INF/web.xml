@@ -11,7 +11,7 @@
 
     <servlet-mapping>
         <servlet-name>servlet</servlet-name>
-        <url-pattern/>
+        <url-pattern>/catalog/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

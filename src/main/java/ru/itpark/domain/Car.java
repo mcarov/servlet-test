@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Car {
     private String id;
-    private String manufacturer;
     private String model;
     private String enginePower;
     private String year;
     private String color;
-    private String image;
+    private String description;
+    private String imageUrl;
 }

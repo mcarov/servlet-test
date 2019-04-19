@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>Сar catalog</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -25,16 +25,18 @@
                         </span>
                     </div>
                 </form>
+                <a class="btn btn-primary btn-block" href="<%=request.getContextPath()%>/catalog/">Create record</a>
             </div>
             <div class="col-lg-9">
                 <div class="card-columns">
                     <% if(request.getAttribute("cars") != null) { %>
                     <% for (Car item : (List<Car>)request.getAttribute("cars")) { %>
                         <div class="card">
-                            <img src="<%=item.getImage()%>" class="card-img-top" alt="">
+                            <img src="<%=item.getImageUrl()%>" class="card-img-top" alt="">
                             <div class="card-body">
-                                <h5 class="card-title"><%=item.getManufacturer()%> <%=item.getModel()%></h5>
-                                <a href="<%=request.getContextPath()%>/catalog/<%= item.getId()%>" class="btn btn-primary">Details</a>
+                                <h5 class="card-title"><%=item.getModel()%></h5>
+                                <p><%=item.getDescription()%></p>
+                                <a class="btn btn-primary" href="<%=request.getContextPath()%>/catalog/<%= item.getId()%>">Details</a>
                             </div>
                         </div>
                     <% } %>

@@ -18,18 +18,18 @@
     <%     Car car = (Car) request.getAttribute("car");%>
     <div class="row">
         <div class="col-xl-8">
-            <img src="<%=car.getImage()%>" class="img-fluid" alt="">
+            <img src="<%=car.getImageUrl()%>" class="img-fluid" alt="">
         </div>
         <div class="col-xl-4">
             <ul>
-                <li><h5>Производитель</h5><%=car.getManufacturer()%></li>
-                <li><h5>Модель</h5><%=car.getModel()%></li>
-                <li><h5>Мощность двигателя</h5><%=car.getEnginePower()%></li>
-                <li><h5>Год выпуска</h5><%=car.getYear()%></li>
-                <li><h5>Цвет</h5><%=car.getColor()%></li>
+                <li><h5>Model</h5><%=car.getModel()%></li>
+                <li><h5>Engine power</h5><%=car.getEnginePower()%></li>
+                <li><h5>Year</h5><%=car.getYear()%></li>
+                <li><h5>Color</h5><%=car.getColor()%></li>
+                <li><h5>Description</h5><%=car.getDescription()%></li>
             </ul>
             <br><br>
-            <a href="<%=request.getContextPath()%>/catalog/" class="btn btn-primary">Catalog</a>
+            <a class="btn btn-primary" href="<%=request.getContextPath()%>/catalog/">Catalog</a>
         </div>
     </div>
     <% }%>

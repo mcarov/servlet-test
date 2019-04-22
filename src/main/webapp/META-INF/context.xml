@@ -5,7 +5,7 @@
         auth="Container"
         type="javax.sql.DataSource"
         driverClassName="org.sqlite.JDBC"
-        url="jdbc:sqlite://C:/Users/KO-01/IdeaProjects/02. Servlet Test/db.sqlite"
+        url="jdbc:sqlite://C:/Users/Dmitry/IdeaProjects/02. Servlet Test/db.sqlite"
         closeMethod="close"
     />
     <Resource

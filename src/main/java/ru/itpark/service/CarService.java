@@ -6,8 +6,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CarService {
     private final DataSource source;
@@ -36,6 +35,30 @@ public class CarService {
         return cars;
     }
 
+    public void updateFromList(List<Car> newList) {
+        Map<String, Car> map = new TreeMap<>();
+        getAll().forEach(car -> map.put(car.getId(), car));
+        newList.forEach(newCar -> map.put(newCar.getId(), newCar));
+        deleteAll();
+        try(Connection conn = source.getConnection();
+            PreparedStatement statement =
+                    conn.prepareStatement("INSERT INTO cars VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+            for(Car car : map.values()) {
+                statement.setString(1, car.getId());
+                statement.setString(2, car.getModel());
+                statement.setString(3, car.getEnginePower());
+                statement.setString(4, car.getYear());
+                statement.setString(5, car.getColor());
+                statement.setString(6, car.getDescription());
+                statement.setString(7, car.getImageUrl());
+                statement.execute();
+            }
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void create() {
         try(Connection conn = source.getConnection();
             PreparedStatement statement =
@@ -48,27 +71,6 @@ public class CarService {
             statement.setString(4, "");
             statement.setString(5, "");
             statement.setString(6, "");
-            statement.execute();
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void create(String id, String model, String enginePower, String year,
-                       String color, String description, String imageUrl) {
-        try(Connection conn = source.getConnection();
-            PreparedStatement statement =
-                    conn.prepareStatement("INSERT INTO cars (id, model, enginePower, year, color, description, imageUrl)" +
-                            " VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-
-            statement.setString(1, id);
-            statement.setString(2, model);
-            statement.setString(3, enginePower);
-            statement.setString(4, year);
-            statement.setString(5, color);
-            statement.setString(6, description);
-            statement.setString(7, imageUrl);
             statement.execute();
         }
         catch(SQLException e) {

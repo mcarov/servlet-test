@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Servlet extends HttpServlet {
+public class CatalogServlet extends HttpServlet {
     private CarService service;
     private String[] headers = {"id", "model", "enginePower", "year", "color", "description", "imageUrl"};
 
@@ -67,7 +67,7 @@ public class Servlet extends HttpServlet {
                 service.create();
             }
             else if(map.containsKey("deleteAll")) {
-
+                service.deleteAll();
             }
             else if(map.containsKey("delete")) {
                 service.deleteById(req.getParameter("delete"));
@@ -75,12 +75,10 @@ public class Servlet extends HttpServlet {
         }
         else if(map.size() == 2) {
             if(map.containsKey("import")) {
-                //System.out.println("Import from: "+req.getParameter("filePath"));
-                importFromCsv(req.getParameter("filePath"));
+                importFromCsvFile(req.getParameter("filePath"));
             }
             else if(map.containsKey("export")) {
-                //System.out.println("Export to: "+req.getParameter("filePath"));
-                exportToCsv(req.getParameter("filePath"));
+                exportToCsvFile(req.getParameter("filePath"));
             }
         }
 
@@ -89,39 +87,31 @@ public class Servlet extends HttpServlet {
         req.getRequestDispatcher("/WEB-INF/catalog.jsp").forward(req, resp);
     }
 
-    private void importFromCsv(String filePath)  {
+    private void importFromCsvFile(String filePath)  {
         try(Reader reader = Files.newBufferedReader(Paths.get(filePath));
             CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.
                     withFirstRecordAsHeader().
                     withIgnoreHeaderCase().
                     withTrim())) {
+
+            List<Car> csvList = new ArrayList<>();
             for(CSVRecord record : parser) {
-                if(service.getById(record.get("id")) != null) {
-                    service.updateById(record.get("id"),
-                            record.get("model"),
-                            record.get("enginePower"),
-                            record.get("year"),
-                            record.get("color"),
-                            record.get("description"),
-                            record.get("imageUrl"));
-                }
-                else {
-                    service.create(record.get("id"),
-                            record.get("model"),
-                            record.get("enginePower"),
-                            record.get("year"),
-                            record.get("color"),
-                            record.get("description"),
-                            record.get("imageUrl"));
-                }
+                csvList.add(new Car(record.get("id"),
+                        record.get("model"),
+                        record.get("enginePower"),
+                        record.get("year"),
+                        record.get("color"),
+                        record.get("description"),
+                        record.get("imageUrl")));
             }
+            service.updateFromList(csvList);
         }
         catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void exportToCsv(String filePath) {
+    private void exportToCsvFile(String filePath) {
         try(Writer output = Files.newBufferedWriter(Paths.get(filePath));
             CSVPrinter printer = new CSVPrinter(output, CSVFormat.DEFAULT.withHeader(headers))) {
 

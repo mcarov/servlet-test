@@ -55,6 +55,27 @@ public class CarService {
         }
     }
 
+    public void create(String id, String model, String enginePower, String year,
+                       String color, String description, String imageUrl) {
+        try(Connection conn = source.getConnection();
+            PreparedStatement statement =
+                    conn.prepareStatement("INSERT INTO cars (id, model, enginePower, year, color, description, imageUrl)" +
+                            " VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+
+            statement.setString(1, id);
+            statement.setString(2, model);
+            statement.setString(3, enginePower);
+            statement.setString(4, year);
+            statement.setString(5, color);
+            statement.setString(6, description);
+            statement.setString(7, imageUrl);
+            statement.execute();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Car> getAll() {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();

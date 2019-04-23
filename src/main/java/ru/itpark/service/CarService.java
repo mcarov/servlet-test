@@ -14,6 +14,20 @@ public class CarService {
     public CarService() throws NamingException {
         InitialContext context = new InitialContext();
         source = (DataSource) context.lookup("java:comp/env/jdbc/db");
+        try(Connection conn = source.getConnection();
+            Statement statement = conn.createStatement()) {
+
+            statement.execute("CREATE TABLE IF NOT EXISTS cars (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "model TEXT," +
+                    "enginePower TEXT," +
+                    "year TEXT," +
+                    "color TEXT," +
+                    "description TEXT," +
+                    "imageUrl TEXT)");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Car> search(String request) {

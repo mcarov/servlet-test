@@ -3,12 +3,7 @@ jdk: oraclejdk8
 
 script: mvn -e verify
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-notifications:
-  email:
-    recipients:
-      - mcarov_d@mail.ru
-    on_failure: always
-    on_success: change
+deploy:
+  provider: heroku
+  api_key: $HEROKU_KEY
+  app: servlet-test-itpark

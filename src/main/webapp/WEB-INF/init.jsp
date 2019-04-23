@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -17,7 +16,7 @@
         <h3 class="text-center">Welcome to your workplace!</h3>
         <br>
         <div class="col text-center">
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/catalog/">To catalog</a>
+            <a class="btn btn-primary" href="<%=request.getContextPath()%>/catalog/">Enter</a>
         </div>
     </div>
 </body>

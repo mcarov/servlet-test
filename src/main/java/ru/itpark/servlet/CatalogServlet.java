@@ -44,11 +44,11 @@ public class CatalogServlet extends HttpServlet {
                 if(req.getParameterMap().size() == 6) {
                    service.updateById(id,
                            req.getParameter("model"),
-                           req.getParameter("enginePower"),
+                           req.getParameter("engine-power"),
                            req.getParameter("year"),
                            req.getParameter("color"),
                            req.getParameter("description"),
-                           req.getParameter("imageUrl"));
+                           req.getParameter("image-url"));
                 }
                 Car car = service.getById(id);
                 req.setAttribute("car", car);
@@ -66,7 +66,7 @@ public class CatalogServlet extends HttpServlet {
             else if(map.containsKey("create")) {
                 service.create();
             }
-            else if(map.containsKey("deleteAll")) {
+            else if(map.containsKey("delete-all")) {
                 service.deleteAll();
             }
             else if(map.containsKey("delete")) {
@@ -75,10 +75,10 @@ public class CatalogServlet extends HttpServlet {
         }
         else if(map.size() == 2) {
             if(map.containsKey("import")) {
-                importFromCsvFile(req.getParameter("filePath"));
+                importFromCsvFile(req.getParameter("file-path"));
             }
             else if(map.containsKey("export")) {
-                exportToCsvFile(req.getParameter("filePath"));
+                exportToCsvFile(req.getParameter("file-path"));
             }
         }
 
@@ -96,10 +96,10 @@ public class CatalogServlet extends HttpServlet {
 
             List<Car> csvList = new ArrayList<>();
             for(CSVRecord record : parser) {
-                csvList.add(new Car(record.get("id"),
+                csvList.add(new Car(Integer.parseInt(record.get("id")),
                         record.get("model"),
-                        record.get("enginePower"),
-                        record.get("year"),
+                        Integer.parseInt(record.get("enginePower")),
+                        Integer.parseInt(record.get("year")),
                         record.get("color"),
                         record.get("description"),
                         record.get("imageUrl")));

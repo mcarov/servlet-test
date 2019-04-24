@@ -9,18 +9,18 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Car {
-    private String id;
+    private int id;
     private String model;
-    private String enginePower;
-    private String year;
+    private int enginePower;
+    private int year;
     private String color;
     private String description;
     private String imageUrl;
 
     public boolean hasRequestedValue(String request) {
         return StringUtils.containsIgnoreCase(model, request) ||
-                StringUtils.containsIgnoreCase(enginePower, request) ||
-                StringUtils.containsIgnoreCase(year, request) ||
+                StringUtils.containsIgnoreCase(String.valueOf(enginePower), request) ||
+                StringUtils.containsIgnoreCase(String.valueOf(year), request) ||
                 StringUtils.containsIgnoreCase(color, request) ||
                 StringUtils.containsIgnoreCase(description, request);
     }

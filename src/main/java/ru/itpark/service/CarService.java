@@ -20,8 +20,8 @@ public class CarService {
             statement.execute("CREATE TABLE IF NOT EXISTS cars (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "model TEXT," +
-                    "enginePower TEXT," +
-                    "year TEXT," +
+                    "enginePower INTEGER," +
+                    "year INTEGER," +
                     "color TEXT," +
                     "description TEXT," +
                     "imageUrl TEXT)");
@@ -34,11 +34,10 @@ public class CarService {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars")) {
+            ResultSet resultSet = statement.executeQuery("SELECT id, model, enginePower, year, color, description, imageUrl FROM cars")) {
 
-            Car testCar;
             while(resultSet.next()) {
-                testCar = getCar(resultSet);
+                Car testCar = getCar(resultSet);
                 if(testCar.hasRequestedValue(request))
                     cars.add(testCar);
             }
@@ -50,18 +49,19 @@ public class CarService {
     }
 
     public void updateFromList(List<Car> newList) {
-        Map<String, Car> map = new TreeMap<>();
+        Map<Integer, Car> map = new TreeMap<>();
         getAll().forEach(car -> map.put(car.getId(), car));
         newList.forEach(newCar -> map.put(newCar.getId(), newCar));
         deleteAll();
         try(Connection conn = source.getConnection();
             PreparedStatement statement =
-                    conn.prepareStatement("INSERT INTO cars VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+                    conn.prepareStatement("INSERT INTO cars (id, model, enginePower, year, color, description, imageUrl)" +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             for(Car car : map.values()) {
-                statement.setString(1, car.getId());
+                statement.setInt(1, car.getId());
                 statement.setString(2, car.getModel());
-                statement.setString(3, car.getEnginePower());
-                statement.setString(4, car.getYear());
+                statement.setInt(3, car.getEnginePower());
+                statement.setInt(4, car.getYear());
                 statement.setString(5, car.getColor());
                 statement.setString(6, car.getDescription());
                 statement.setString(7, car.getImageUrl());
@@ -75,9 +75,8 @@ public class CarService {
 
     public void create() {
         try(Connection conn = source.getConnection();
-            PreparedStatement statement =
-                    conn.prepareStatement("INSERT INTO cars (model, enginePower, year, color, description, imageUrl)" +
-                            " VALUES (?, ?, ?, ?, ?, ?)")) {
+            PreparedStatement statement = conn.prepareStatement(
+                    "INSERT INTO cars (model, enginePower, year, color, description, imageUrl) VALUES (?, ?, ?, ?, ?, ?)")) {
 
             statement.setString(1, "");
             statement.setString(2, "");
@@ -96,13 +95,13 @@ public class CarService {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars")) {
+            ResultSet resultSet = statement.executeQuery("SELECT id, model, enginePower, year, color, description, imageUrl FROM cars")) {
 
             while(resultSet.next()) {
                 cars.add(getCar(resultSet));
             }
         }
-        catch (SQLException e) {
+        catch(SQLException e) {
             e.printStackTrace();
         }
         return cars;
@@ -111,11 +110,13 @@ public class CarService {
     public Car getById(String id) {
         Car car = null;
         try(Connection conn = source.getConnection();
-            Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM cars WHERE id="+id)){
+            PreparedStatement statement = conn.prepareStatement(
+                    "SELECT id, model, enginePower, year, color, description, imageUrl FROM cars WHERE id=?")){
 
-            resultSet.next();
-            car = getCar(resultSet);
+            statement.setString(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next()) car = getCar(resultSet);
         }
         catch(SQLException e) {
             e.printStackTrace();
@@ -125,17 +126,18 @@ public class CarService {
 
     public void updateById(String id, String model, String enginePower, String year,
                               String color, String description, String imageUrl) {
-        try(Connection conn = source.getConnection()){
-            PreparedStatement prepStatement = conn.prepareStatement(
-                    "UPDATE cars SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=? WHERE id=?");
-            prepStatement.setString(1, model);
-            prepStatement.setString(2, enginePower);
-            prepStatement.setString(3, year);
-            prepStatement.setString(4, color);
-            prepStatement.setString(5, description);
-            prepStatement.setString(6, imageUrl);
-            prepStatement.setString(7, id);
-            prepStatement.execute();
+        try(Connection conn = source.getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                    "UPDATE cars SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=? WHERE id=?")) {
+
+            statement.setString(1, model);
+            statement.setString(2, enginePower);
+            statement.setString(3, year);
+            statement.setString(4, color);
+            statement.setString(5, description);
+            statement.setString(6, imageUrl);
+            statement.setString(7, id);
+            statement.execute();
         }
         catch(SQLException e) {
             e.printStackTrace();
@@ -145,28 +147,31 @@ public class CarService {
     public void deleteAll() {
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement()) {
+
             statement.execute("DELETE FROM cars");
         }
-        catch (SQLException e) {
+        catch(SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void deleteById(String id) {
         try(Connection conn = source.getConnection();
-            Statement statement = conn.createStatement()) {
-            statement.execute("DELETE FROM cars WHERE id="+id);
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM cars WHERE id=?")) {
+
+            statement.setString(1, id);
+            statement.execute();
         }
-        catch (SQLException e) {
+        catch(SQLException e) {
             e.printStackTrace();
         }
     }
 
     private Car getCar(ResultSet rs) throws SQLException {
-        String id = rs.getString(1);
+        int id = rs.getInt(1);
         String model = rs.getString(2);
-        String enginePower = rs.getString(3);
-        String year = rs.getString(4);
+        int enginePower = rs.getInt(3);
+        int year = rs.getInt(4);
         String color = rs.getString(5);
         String description = rs.getString(6);
         String imageUrl = rs.getString(7);

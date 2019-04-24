@@ -22,7 +22,7 @@
             <div class="col-lg-3" style="background-color: #FFFFFF">
                 <form role="search" action="<%=request.getContextPath()%>/catalog/">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search for">
+                        <input type="text" name="search" class="form-control" placeholder="Search for...">
                         <button type="submit" class="btn btn-primary">Go!</button>
                     </div>
                 </form>
@@ -30,14 +30,13 @@
                 <form action="<%=request.getContextPath()%>/catalog/">
                     <button name="create" class="btn btn-primary btn-block">Create new record</button>
                     <br>
-                    <button name="deleteAll" class="btn btn-danger btn-block"
-                            data-toggle="modal" data-target="#deletingModal">Delete all records</button>
+                    <button name="delete-all" class="btn btn-danger btn-block">Delete all records</button>
                     <br>
                     <h5 class="text-center">CSV</h5>
                 </form>
                 <form action="<%= request.getContextPath() %>/catalog/">
                     <div class="input-group">
-                        <input type="text" id="filePath" name="filePath" placeholder="File path" class="form-control">
+                        <input type="text" id="file-path" name="file-path" placeholder="File path..." class="form-control">
                         <div class="btn-group btn-block">
                             <button type="submit" name="import" class="btn btn-primary">Import</button>
                             <button type="submit" name="export" class="btn btn-primary">Export</button>

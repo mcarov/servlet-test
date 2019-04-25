@@ -20,21 +20,21 @@
         <br>
         <div class="row">
             <div class="col-lg-3" style="background-color: #FFFFFF">
-                <form role="search" action="<%=request.getContextPath()%>/catalog/">
+                <form role="search" action="<%=request.getContextPath()%>">
                     <div class="input-group">
                         <input type="text" name="search" class="form-control" placeholder="Search for...">
                         <button type="submit" class="btn btn-primary">Go!</button>
                     </div>
                 </form>
                 <br>
-                <form action="<%=request.getContextPath()%>/catalog/">
+                <form action="<%=request.getContextPath()%>">
                     <button name="create" class="btn btn-primary btn-block">Create new record</button>
                     <br>
                     <button name="delete-all" class="btn btn-danger btn-block">Delete all records</button>
                     <br>
                     <h5 class="text-center">CSV</h5>
                 </form>
-                <form action="<%= request.getContextPath() %>/catalog/">
+                <form action="<%= request.getContextPath()%>">
                     <div class="input-group">
                         <input type="text" id="file-path" name="file-path" placeholder="File path..." class="form-control">
                         <div class="btn-group btn-block">
@@ -53,7 +53,7 @@
                             <div class="card-body">
                                 <h5 class="card-title"><%=item.getModel()%></h5>
                                 <p><%=item.getDescription()%></p>
-                                <a class="btn btn-primary" href="<%=request.getContextPath()%>/catalog/<%=item.getId()%>">Details</a>
+                                <a class="btn btn-primary" href="<%=request.getContextPath()%>/details/<%=item.getId()%>">Details</a>
                             </div>
                         </div>
                     <% } %>

@@ -79,8 +79,8 @@ public class CarService {
                     "INSERT INTO cars (model, enginePower, year, color, description, imageUrl) VALUES (?, ?, ?, ?, ?, ?)")) {
 
             statement.setString(1, "");
-            statement.setString(2, "");
-            statement.setString(3, "");
+            statement.setInt(2, 0);
+            statement.setInt(3, 0);
             statement.setString(4, "");
             statement.setString(5, "");
             statement.setString(6, "");
@@ -113,10 +113,10 @@ public class CarService {
             PreparedStatement statement = conn.prepareStatement(
                     "SELECT id, model, enginePower, year, color, description, imageUrl FROM cars WHERE id=?")){
 
-            statement.setString(1, id);
-            ResultSet resultSet = statement.executeQuery();
-
-            if(resultSet.next()) car = getCar(resultSet);
+            statement.setInt(1, Integer.parseInt(id));
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if(resultSet.next()) car = getCar(resultSet);
+            }
         }
         catch(SQLException e) {
             e.printStackTrace();
@@ -131,12 +131,12 @@ public class CarService {
                     "UPDATE cars SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=? WHERE id=?")) {
 
             statement.setString(1, model);
-            statement.setString(2, enginePower);
-            statement.setString(3, year);
+            statement.setInt(2, Integer.parseInt(enginePower));
+            statement.setInt(3, Integer.parseInt(year));
             statement.setString(4, color);
             statement.setString(5, description);
             statement.setString(6, imageUrl);
-            statement.setString(7, id);
+            statement.setInt(7, Integer.parseInt(id));
             statement.execute();
         }
         catch(SQLException e) {

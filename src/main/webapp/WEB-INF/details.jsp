@@ -19,7 +19,7 @@
     <% Car car = (Car) request.getAttribute("car"); %>
     <div class="row">
         <div class="col-xl-3">
-            <form action="<%=request.getContextPath()%>/catalog/<%=car.getId()%>">
+            <form action="<%=request.getContextPath()%>/details/<%=car.getId()%>">
                 <div class="form-group">
                     <label for="model">Model</label>
                     <input id="model" name="model" class="form-control" type="text" value="<%=car.getModel()%>">
@@ -46,10 +46,10 @@
                 </div>
                 <div align="right">
                     <button type="submit" class="btn btn-primary">Save changes</button>
-                    <a class="btn btn-primary" href="<%=request.getContextPath()%>/catalog/">To catalog</a>
+                    <a class="btn btn-primary" href="/">To catalog</a>
                 </div>
             </form>
-            <form action="<%=request.getContextPath()%>/catalog/">
+            <form action="/">
                 <div align="left">
                     <button name="delete" class="btn btn-danger" value="<%=car.getId()%>">Delete record</button>
                 </div>

@@ -13,4 +13,9 @@
         type="ru.itpark.service.CarService"
         factory="org.apache.naming.factory.BeanFactory"
     />
+    <Resource
+        name="bean/csv-file-service"
+        type="ru.itpark.service.CsvFileService"
+        factory="org.apache.naming.factory.BeanFactory"
+    />
 </Context>

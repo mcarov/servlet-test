@@ -3,25 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-    <servlet>
-        <servlet-name>initServlet</servlet-name>
-        <servlet-class>ru.itpark.servlet.InitServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>initServlet</servlet-name>
-        <url-pattern/>
-    </servlet-mapping>
 
     <servlet>
-        <servlet-name>catalogServlet</servlet-name>
+        <servlet-name>catalog</servlet-name>
         <servlet-class>ru.itpark.servlet.CatalogServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>details</servlet-name>
+        <servlet-class>ru.itpark.servlet.DetailsServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
-        <servlet-name>catalogServlet</servlet-name>
-        <url-pattern>/catalog/*</url-pattern>
+        <servlet-name>catalog</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>details</servlet-name>
+        <url-pattern>/details/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

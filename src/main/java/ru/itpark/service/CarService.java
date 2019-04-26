@@ -7,6 +7,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CarService {
     private final DataSource source;
@@ -49,14 +50,14 @@ public class CarService {
     }
 
     public void updateFromList(List<Car> newList) {
-        Map<Integer, Car> map = new TreeMap<>();
-        getAll().forEach(car -> map.put(car.getId(), car));
-        newList.forEach(newCar -> map.put(newCar.getId(), newCar));
-        deleteAll();
+        Map<Integer, Car> map = getAll().stream().collect(Collectors.toMap(Car::getId, c -> c));
+        map.putAll(newList.stream().collect(Collectors.toMap(Car::getId, c -> c)));
+
         try(Connection conn = source.getConnection();
             PreparedStatement statement =
                     conn.prepareStatement("INSERT INTO cars (id, model, enginePower, year, color, description, imageUrl)" +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+                            "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+                            "ON CONFLICT(id) DO UPDATE SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=?")) {
             for(Car car : map.values()) {
                 statement.setInt(1, car.getId());
                 statement.setString(2, car.getModel());
@@ -65,6 +66,12 @@ public class CarService {
                 statement.setString(5, car.getColor());
                 statement.setString(6, car.getDescription());
                 statement.setString(7, car.getImageUrl());
+                statement.setString(8, car.getModel());
+                statement.setInt(9, car.getEnginePower());
+                statement.setInt(10, car.getYear());
+                statement.setString(11, car.getColor());
+                statement.setString(12, car.getDescription());
+                statement.setString(13, car.getImageUrl());
                 statement.execute();
             }
         }

@@ -46,10 +46,10 @@
                 </div>
                 <div align="right">
                     <button type="submit" class="btn btn-primary">Save changes</button>
-                    <a class="btn btn-primary" href="/">To catalog</a>
+                    <a class="btn btn-primary" href="<%=request.getContextPath()%>/">To catalog</a>
                 </div>
             </form>
-            <form action="/">
+            <form action="<%=request.getContextPath()%>/">
                 <div align="left">
                     <button name="delete" class="btn btn-danger" value="<%=car.getId()%>">Delete record</button>
                 </div>

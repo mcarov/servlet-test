@@ -8,25 +8,38 @@ import ru.itpark.domain.Car;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Part;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CsvFileService {
+    private final String uploadPath;
+    private final String csvFile;
+
     private CarService carService;
     private String[] headers = {"id", "model", "enginePower", "year", "color", "description", "imageUrl"};
 
-    public CsvFileService() throws NamingException {
+    public CsvFileService() throws NamingException, IOException {
+        csvFile = "cars_database.csv";
+        uploadPath = System.getenv("UPLOAD_PATH");
+        Files.createDirectories(Paths.get(uploadPath));
+
         InitialContext context = new InitialContext();
         carService = (CarService) context.lookup("java:/comp/env/bean/car-service");
     }
 
-    public void importFromCsvFile(String filePath)  {
-        try(Reader reader = Files.newBufferedReader(Paths.get(filePath));
+    public void importFromCsvFile(Part part) throws IOException, SQLException {
+        String csvFileId = UUID.randomUUID().toString();
+        part.write(Paths.get(uploadPath).resolve(csvFileId).toString());
+
+        try(Reader reader = Files.newBufferedReader(Paths.get(uploadPath).resolve(csvFileId));
             CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.
                     withFirstRecordAsHeader().
                     withIgnoreHeaderCase().
@@ -44,13 +57,11 @@ public class CsvFileService {
             }
             carService.updateFromList(csvList);
         }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void exportToCsvFile(String filePath) {
-        try(Writer output = Files.newBufferedWriter(Paths.get(filePath));
+    public void exportToCsvFile(ServletOutputStream outputStream) throws IOException, SQLException {
+        Path path = Paths.get(uploadPath).resolve(csvFile);
+        try(Writer output = Files.newBufferedWriter(path);
             CSVPrinter printer = new CSVPrinter(output, CSVFormat.DEFAULT.withHeader(headers))) {
 
             for(Car car : carService.getAll()) {
@@ -63,8 +74,7 @@ public class CsvFileService {
                         car.getImageUrl());
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(path.toFile().exists());
+        Files.copy(path, outputStream);
     }
 }

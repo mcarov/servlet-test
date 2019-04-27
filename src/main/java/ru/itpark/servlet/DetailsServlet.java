@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class DetailsServlet extends HttpServlet {
     private static final long serialVersionUID = -2106984404887698404L;
@@ -28,24 +29,30 @@ public class DetailsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getPathInfo() != null) {
-            String[] split = req.getPathInfo().split("/");
-            if(split.length == 2) {
-                String id = split[1];
-                if(req.getParameterMap().size() == 6) {
-                    carService.updateById(id,
-                            req.getParameter("model"),
-                            req.getParameter("engine-power"),
-                            req.getParameter("year"),
-                            req.getParameter("color"),
-                            req.getParameter("description"),
-                            req.getParameter("image-url"));
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            if(req.getPathInfo() != null) {
+                String[] split = req.getPathInfo().split("/");
+                if(split.length == 2) {
+                    String id = split[1];
+                    if(req.getParameterMap().size() == 6) {
+                        carService.updateById(id,
+                                req.getParameter("model"),
+                                req.getParameter("engine-power"),
+                                req.getParameter("year"),
+                                req.getParameter("color"),
+                                req.getParameter("description"),
+                                req.getParameter("image-url"));
+
+                    }
+                    Car car = carService.getById(id);
+                    req.setAttribute("car", car);
+                    req.getRequestDispatcher("/WEB-INF/details.jsp").forward(req, resp);
                 }
-                Car car = carService.getById(id);
-                req.setAttribute("car", car);
-                req.getRequestDispatcher("/WEB-INF/details.jsp").forward(req, resp);
             }
+        }
+        catch (SQLException | ServletException | IOException e) {
+            e.printStackTrace();
         }
     }
 }

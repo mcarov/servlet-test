@@ -1,4 +1,5 @@
 <%@ page import="ru.itpark.domain.Car" %>
+<%@ page import="org.apache.commons.validator.routines.UrlValidator" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -6,9 +7,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <%@include file="bootstrap-css.jsp"%>
 
     <title>Details</title>
 </head>
@@ -56,10 +56,16 @@
             </form>
         </div>
         <div class="col-xl-7">
-            <img src="<%=car.getImageUrl()%>" class="img-fluid" alt="">
+            <% UrlValidator validator = new UrlValidator();
+                if(validator.isValid(car.getImageUrl())) { %>
+                <img src="<%=car.getImageUrl()%>" class="card-img-top" alt="">
+            <% }
+            else { %>
+                <img src="<%=request.getContextPath()%>/image/<%=car.getImageUrl()%>" class="card-img-top" alt="">
+            <% } %>
         </div>
     </div>
-    <% }%>
+    <% } %>
 </div>
 </body>
 </html>

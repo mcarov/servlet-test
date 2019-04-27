@@ -8,11 +8,18 @@
         <servlet-name>catalog</servlet-name>
         <servlet-class>ru.itpark.servlet.CatalogServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+        <multipart-config/>
     </servlet>
 
     <servlet>
         <servlet-name>details</servlet-name>
         <servlet-class>ru.itpark.servlet.DetailsServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>image</servlet-name>
+        <servlet-class>ru.itpark.servlet.ImageServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -23,6 +30,11 @@
     <servlet-mapping>
         <servlet-name>details</servlet-name>
         <url-pattern>/details/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>image</servlet-name>
+        <url-pattern>/image/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

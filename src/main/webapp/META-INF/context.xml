@@ -18,4 +18,9 @@
         type="ru.itpark.service.CsvFileService"
         factory="org.apache.naming.factory.BeanFactory"
     />
+    <Resource
+        name="bean/image-service"
+        type="ru.itpark.service.ImageService"
+        factory="org.apache.naming.factory.BeanFactory"
+    />
 </Context>

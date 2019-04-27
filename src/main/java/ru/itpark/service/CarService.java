@@ -31,7 +31,7 @@ public class CarService {
         }
     }
 
-    public List<Car> search(String request) {
+    public List<Car> search(String request) throws SQLException {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement();
@@ -43,13 +43,10 @@ public class CarService {
                     cars.add(testCar);
             }
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
         return cars;
     }
 
-    public void updateFromList(List<Car> newList) {
+    public void updateFromList(List<Car> newList) throws SQLException {
         Map<Integer, Car> map = getAll().stream().collect(Collectors.toMap(Car::getId, c -> c));
         map.putAll(newList.stream().collect(Collectors.toMap(Car::getId, c -> c)));
 
@@ -75,30 +72,24 @@ public class CarService {
                 statement.execute();
             }
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void create() {
+    public void create(String model, String description, String imageId) throws SQLException {
         try(Connection conn = source.getConnection();
             PreparedStatement statement = conn.prepareStatement(
                     "INSERT INTO cars (model, enginePower, year, color, description, imageUrl) VALUES (?, ?, ?, ?, ?, ?)")) {
 
-            statement.setString(1, "");
+            statement.setString(1, model);
             statement.setInt(2, 0);
             statement.setInt(3, 0);
             statement.setString(4, "");
-            statement.setString(5, "");
-            statement.setString(6, "");
+            statement.setString(5, description);
+            statement.setString(6, imageId);
             statement.execute();
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public List<Car> getAll() {
+    public List<Car> getAll() throws SQLException {
         List<Car> cars = new ArrayList<>();
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement();
@@ -108,13 +99,10 @@ public class CarService {
                 cars.add(getCar(resultSet));
             }
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
         return cars;
     }
 
-    public Car getById(String id) {
+    public Car getById(String id) throws SQLException {
         Car car = null;
         try(Connection conn = source.getConnection();
             PreparedStatement statement = conn.prepareStatement(
@@ -125,14 +113,11 @@ public class CarService {
                 if(resultSet.next()) car = getCar(resultSet);
             }
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
         return car;
     }
 
-    public void updateById(String id, String model, String enginePower, String year,
-                              String color, String description, String imageUrl) {
+    public void updateById(String id, String model, String enginePower,
+                           String year, String color, String description, String imageUrl) throws SQLException {
         try(Connection conn = source.getConnection();
             PreparedStatement statement = conn.prepareStatement(
                     "UPDATE cars SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=? WHERE id=?")) {
@@ -146,31 +131,22 @@ public class CarService {
             statement.setInt(7, Integer.parseInt(id));
             statement.execute();
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void deleteAll() {
+    public void deleteAll() throws SQLException {
         try(Connection conn = source.getConnection();
             Statement statement = conn.createStatement()) {
 
             statement.execute("DELETE FROM cars");
         }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void deleteById(String id) {
+    public void deleteById(String id) throws SQLException {
         try(Connection conn = source.getConnection();
             PreparedStatement statement = conn.prepareStatement("DELETE FROM cars WHERE id=?")) {
 
             statement.setString(1, id);
             statement.execute();
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
         }
     }
 

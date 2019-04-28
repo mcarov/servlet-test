@@ -74,7 +74,7 @@ public class CatalogServlet extends HttpServlet {
             }
             else if(map.containsKey("export")) {
                 resp.setContentType("text/csv");
-                resp.setHeader("Content-disposition", "attachment; filename=cars_database.csv");
+                resp.setHeader("Content-disposition", "attachment; filename=car_database.csv");
                 csvFileService.exportToCsvFile(resp.getOutputStream());
             }
             else {

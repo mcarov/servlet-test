@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CarService {
     private final DataSource source;
@@ -47,8 +48,8 @@ public class CarService {
     }
 
     public void updateFromList(List<Car> newList) throws SQLException {
-        Map<Integer, Car> map = getAll().stream().collect(Collectors.toMap(Car::getId, c -> c));
-        map.putAll(newList.stream().collect(Collectors.toMap(Car::getId, c -> c)));
+        Map<Integer, Car> map = Stream.concat(getAll().stream(), newList.stream()).
+                                collect(Collectors.toMap(Car::getId, c -> c));
 
         try(Connection conn = source.getConnection();
             PreparedStatement statement =

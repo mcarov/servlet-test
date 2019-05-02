@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import ru.itpark.domain.Car;
 
 import javax.naming.InitialContext;
@@ -17,6 +18,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class CsvFileService {
@@ -46,8 +48,17 @@ public class CsvFileService {
                     withTrim())) {
 
             List<Car> csvList = new ArrayList<>();
+            Random rnd = new Random(System.currentTimeMillis());
             for(CSVRecord record : parser) {
-                csvList.add(new Car(Integer.parseInt(record.get("id")),
+                int id;
+                String idFromFile = record.get("id");
+                if(!StringUtils.isNumeric(idFromFile)) {
+                    id = rnd.nextInt()&Integer.MAX_VALUE;
+                }
+                else {
+                    id = Integer.parseInt(idFromFile);
+                }
+                csvList.add(new Car(id,
                         record.get("model"),
                         Integer.parseInt(record.get("enginePower")),
                         Integer.parseInt(record.get("year")),

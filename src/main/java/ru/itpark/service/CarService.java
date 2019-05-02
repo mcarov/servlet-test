@@ -49,7 +49,7 @@ public class CarService {
 
     public void updateFromList(List<Car> newList) throws SQLException {
         Map<Integer, Car> map = Stream.concat(getAll().stream(), newList.stream()).
-                                collect(Collectors.toMap(Car::getId, c -> c));
+                                collect(Collectors.toMap(Car::getId, car -> car , (key1, key2) -> key2));
 
         try(Connection conn = source.getConnection();
             PreparedStatement statement =

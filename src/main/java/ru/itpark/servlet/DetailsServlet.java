@@ -36,13 +36,12 @@ public class DetailsServlet extends HttpServlet {
                 if(split.length == 2) {
                     String id = split[1];
                     if(req.getParameterMap().size() == 6) {
-                        carService.updateById(id,
-                                req.getParameter("model"),
+                        carService.updateById(req.getParameter("model"),
                                 req.getParameter("engine-power"),
                                 req.getParameter("year"),
                                 req.getParameter("color"),
                                 req.getParameter("description"),
-                                req.getParameter("image-url"));
+                                req.getParameter("image-url"), id);
 
                     }
                     Car car = carService.getById(id);

@@ -75,18 +75,13 @@ public class CarService {
         }
     }
 
-    public void create(String model, String description, String imageId) throws SQLException {
+    public void create(String model, String enginePower, String year, String color,
+                       String description, String imageId) throws SQLException {
         try(Connection conn = source.getConnection();
             PreparedStatement statement = conn.prepareStatement(
                     "INSERT INTO cars (model, enginePower, year, color, description, imageUrl) VALUES (?, ?, ?, ?, ?, ?)")) {
 
-            statement.setString(1, model);
-            statement.setInt(2, 0);
-            statement.setInt(3, 0);
-            statement.setString(4, "");
-            statement.setString(5, description);
-            statement.setString(6, imageId);
-            statement.execute();
+            executeStatement(statement, model, enginePower, year, color, description, imageId);
         }
     }
 
@@ -117,20 +112,13 @@ public class CarService {
         return car;
     }
 
-    public void updateById(String id, String model, String enginePower,
-                           String year, String color, String description, String imageUrl) throws SQLException {
+    public void updateById(String model, String enginePower,
+                           String year, String color, String description, String imageUrl, String id) throws SQLException {
         try(Connection conn = source.getConnection();
             PreparedStatement statement = conn.prepareStatement(
                     "UPDATE cars SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=? WHERE id=?")) {
 
-            statement.setString(1, model);
-            statement.setInt(2, Integer.parseInt(enginePower));
-            statement.setInt(3, Integer.parseInt(year));
-            statement.setString(4, color);
-            statement.setString(5, description);
-            statement.setString(6, imageUrl);
-            statement.setInt(7, Integer.parseInt(id));
-            statement.execute();
+            executeStatement(statement, model, enginePower, year, color, description, imageUrl, id);
         }
     }
 
@@ -160,5 +148,19 @@ public class CarService {
         String description = rs.getString(6);
         String imageUrl = rs.getString(7);
         return new Car(id, model, enginePower, year, color, description, imageUrl);
+    }
+
+    private void executeStatement(PreparedStatement statement, String ... args) throws SQLException {
+        if(statement.getParameterMetaData().getParameterCount() == args.length) {
+            statement.setString(1, args[0]);
+            statement.setInt(2, Integer.parseInt(args[1]));
+            statement.setInt(3, Integer.parseInt(args[2]));
+            statement.setString(4, args[3]);
+            statement.setString(5, args[4]);
+            statement.setString(6, args[5]);
+            if(args.length == 7)
+                statement.setInt(7, Integer.parseInt(args[6]));
+            statement.execute();
+        }
     }
 }

@@ -44,6 +44,18 @@
                         <input id="model" name="model" class="form-control" type="text" required>
                     </div>
                     <div class="form-group">
+                        <label for="engine-power">Engine power</label>
+                        <input id="engine-power" name="engine-power" class="form-control" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input id="year" name="year" class="form-control" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <input id="color" name="color" class="form-control" type="text" required>
+                    </div>
+                    <div class="form-group">
                         <label for="description">Description</label>
                         <input id="description" name="description" class="form-control" type="text" required>
                     </div>

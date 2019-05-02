@@ -79,11 +79,14 @@ public class CatalogServlet extends HttpServlet {
             }
             else {
                 String model = req.getParameter("model");
+                String enginePower = req.getParameter("engine-power");
+                String year = req.getParameter("year");
+                String color = req.getParameter("color");
                 String description = req.getParameter("description");
                 Part part = req.getPart("image");
 
                 String imageId = imageService.writeImage(part);
-                carService.create(model, description, imageId);
+                carService.create(model, enginePower, year, color, description, imageId);
                 resp.sendRedirect(String.join("/", req.getContextPath(), req.getServletPath()));
             }
         }

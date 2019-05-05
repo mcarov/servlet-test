@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class CarService {
     private final DataSource source;
 
-    public CarService() throws NamingException {
+    public CarService() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
         source = (DataSource) context.lookup("java:comp/env/jdbc/db");
         try(Connection conn = source.getConnection();
@@ -27,8 +27,23 @@ public class CarService {
                     "color TEXT," +
                     "description TEXT," +
                     "imageUrl TEXT)");
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+    }
+
+    long getFreeId() throws SQLException {
+        try(Connection conn = source.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM cars")) {
+            resultSet.next();
+            if(resultSet.getLong(1) == 0) {
+                return 0;
+            }
+            else {
+                try(ResultSet newResultSet = statement.executeQuery("SELECT last_insert_rowid()")) {
+                    newResultSet.next();
+                    return newResultSet.getLong(1);
+                }
+            }
         }
     }
 
@@ -48,7 +63,7 @@ public class CarService {
     }
 
     public void updateFromList(List<Car> newList) throws SQLException {
-        Map<Integer, Car> map = Stream.concat(getAll().stream(), newList.stream()).
+        Map<Long, Car> map = Stream.concat(getAll().stream(), newList.stream()).
                                 collect(Collectors.toMap(Car::getId, car -> car , (key1, key2) -> key2));
 
         try(Connection conn = source.getConnection();
@@ -56,8 +71,9 @@ public class CarService {
                     conn.prepareStatement("INSERT INTO cars (id, model, enginePower, year, color, description, imageUrl)" +
                             "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                             "ON CONFLICT(id) DO UPDATE SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=?")) {
+
             for(Car car : map.values()) {
-                statement.setInt(1, car.getId());
+                statement.setLong(1, car.getId());
                 statement.setString(2, car.getModel());
                 statement.setInt(3, car.getEnginePower());
                 statement.setInt(4, car.getYear());
@@ -140,7 +156,7 @@ public class CarService {
     }
 
     private Car getCar(ResultSet rs) throws SQLException {
-        int id = rs.getInt(1);
+        long id = rs.getLong(1);
         String model = rs.getString(2);
         int enginePower = rs.getInt(3);
         int year = rs.getInt(4);
@@ -159,7 +175,7 @@ public class CarService {
             statement.setString(5, args[4]);
             statement.setString(6, args[5]);
             if(args.length == 7)
-                statement.setInt(7, Integer.parseInt(args[6]));
+                statement.setLong(7, Long.parseLong(args[6]));
             statement.execute();
         }
     }

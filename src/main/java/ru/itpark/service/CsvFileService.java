@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class CsvFileService {
@@ -48,16 +47,13 @@ public class CsvFileService {
                     withTrim())) {
 
             List<Car> csvList = new ArrayList<>();
-            Random rnd = new Random(System.currentTimeMillis());
+            long id = carService.getFreeId();
             for(CSVRecord record : parser) {
-                int id;
                 String idFromFile = record.get("id");
-                if(!StringUtils.isNumeric(idFromFile)) {
-                    id = rnd.nextInt()&Integer.MAX_VALUE;
-                }
-                else {
-                    id = Integer.parseInt(idFromFile);
-                }
+                if(!StringUtils.isNumeric(idFromFile))
+                    id++;
+                else
+                    id = Long.parseLong(idFromFile);
                 csvList.add(new Car(id,
                         record.get("model"),
                         Integer.parseInt(record.get("enginePower")),

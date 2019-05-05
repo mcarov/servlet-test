@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Car {
-    private int id;
+    private long id;
     private String model;
     private int enginePower;
     private int year;

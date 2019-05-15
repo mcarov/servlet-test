@@ -70,7 +70,6 @@ public class CsvFileService {
         Path path = Paths.get(uploadPath).resolve(csvFile);
         try(Writer output = Files.newBufferedWriter(path);
             CSVPrinter printer = new CSVPrinter(output, CSVFormat.DEFAULT.withHeader(headers))) {
-
             for(Car car : carService.getAll()) {
                 printer.printRecord(car.getId(),
                         car.getModel(),

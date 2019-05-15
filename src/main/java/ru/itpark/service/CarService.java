@@ -7,8 +7,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CarService {
     private final DataSource source;
@@ -62,17 +60,14 @@ public class CarService {
         return cars;
     }
 
-    public void updateFromList(List<Car> newList) throws SQLException {
-        Map<Long, Car> map = Stream.concat(getAll().stream(), newList.stream()).
-                                collect(Collectors.toMap(Car::getId, car -> car , (key1, key2) -> key2));
-
+    public void updateFromList(List<Car> list) throws SQLException {
         try(Connection conn = source.getConnection();
             PreparedStatement statement =
                     conn.prepareStatement("INSERT INTO cars (id, model, enginePower, year, color, description, imageUrl)" +
                             "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                             "ON CONFLICT(id) DO UPDATE SET model=?, enginePower=?, year=?, color=?, description=?, imageUrl=?")) {
 
-            for(Car car : map.values()) {
+            for(Car car : list) {
                 statement.setLong(1, car.getId());
                 statement.setString(2, car.getModel());
                 statement.setInt(3, car.getEnginePower());
